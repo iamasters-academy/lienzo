@@ -1,0 +1,64 @@
+# Lienzo en tu servidor: pizarra + base de datos + HTTPS automático (Caddy + Let's Encrypt).
+#
+#   1. bash scripts/crear-env.sh      (crea .env con claves aleatorias)
+#   2. docker compose up -d --build
+#   3. docker compose exec app node dist-server/cli.js invite tu@email.com admin
+#
+# Antes, el dominio de DOMAIN tiene que apuntar (registro A) a la IP de este servidor y los puertos
+# 80 y 443 tienen que estar libres y abiertos. ¿Ya tienes DM Engine en este servidor? Mira
+# docker-compose.junto-a-dm-engine.yml.
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lienzo
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en .env}
+      POSTGRES_DB: lienzo
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lienzo -d lienzo"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: .
+    image: lienzo:latest
+    restart: unless-stopped
+    init: true
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      NODE_ENV: production
+      LOG_LEVEL: warn
+      DATABASE_URL: postgres://lienzo:${POSTGRES_PASSWORD}@db:5432/lienzo
+      PUBLIC_BASE_URL: https://${DOMAIN:?Falta DOMAIN en .env}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      LIENZO_AI_MODEL: ${LIENZO_AI_MODEL:-}
+    logging:
+      driver: json-file
+      options: { max-size: 10m, max-file: "3" }
+
+  # Se arranca con COMPOSE_PROFILES=caddy (el valor por defecto de .env).
+  caddy:
+    image: caddy:2-alpine
+    profiles: [caddy]
+    restart: unless-stopped
+    depends_on: [app]
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: ${DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

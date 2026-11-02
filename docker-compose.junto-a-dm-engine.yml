@@ -1,0 +1,24 @@
+# Para un servidor donde ya funciona DM Engine (instalado en /root/dm-engine): su Caddy ocupa los
+# puertos 80 y 443, así que Lienzo no arranca el suyo y se une a la red de DM Engine con el nombre
+# «lienzo». El Caddy de DM Engine le da el HTTPS. Se activa desde .env:
+#
+#   COMPOSE_PROFILES=
+#   COMPOSE_FILE=docker-compose.yml:docker-compose.junto-a-dm-engine.yml
+#
+# y en el Caddyfile de DM Engine se añade (luego: docker compose restart caddy, en /root/dm-engine):
+#
+#   pizarra.tudominio.com {
+#   	encode gzip
+#   	reverse_proxy lienzo:3000
+#   }
+services:
+  app:
+    networks:
+      default: {}
+      dm-engine:
+        aliases: [lienzo]
+
+networks:
+  dm-engine:
+    name: dm-engine_default
+    external: true

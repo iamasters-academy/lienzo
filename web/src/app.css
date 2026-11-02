@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+/* Cream surfaces, warm ink, the gradient only as an accent. */
+@theme {
+  --color-cream: #fbf8f3;
+  --color-card: #fffcf8;
+  --color-ink: #1a0f0c;
+  --color-muted: #8c8079;
+  --color-line: #efe6d8;
+  --color-violet: #6d28d9;
+  --color-magenta: #be185d;
+  --color-coral: #fb7185;
+  --color-alert: #b01843;
+  --color-alert-bg: #fff0f3;
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+  --font-brand: "Plus Jakarta Sans", "Geist", sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.ai-gradient {
+  background-image: linear-gradient(120deg, #6d28d9, #be185d, #fb7185);
+}
+
+.ai-gradient-text {
+  background-image: linear-gradient(120deg, #6d28d9, #be185d, #fb7185);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.label-mono {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-size: 11px;
+}
+
+/* Excalidraw: keep its UI but align accent and font with ours. */
+.excalidraw {
+  --color-primary: #6d28d9;
+  --color-primary-darker: #5b21b6;
+  --color-primary-darkest: #4c1d95;
+  --color-primary-light: #ede9fe;
+  --ui-font: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+@keyframes float-up {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-260px) scale(1.4);
+    opacity: 0;
+  }
+}
+
+.reaction-float {
+  animation: float-up 2.4s ease-out forwards;
+}

@@ -1,0 +1,47 @@
+{
+  "name": "lienzo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Self-hosted collaborative whiteboard in the style of Miro, built on Excalidraw.",
+  "type": "module",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev:server": "tsx watch --env-file=.env server/index.ts",
+    "dev:web": "node scripts/copy-assets.mjs && vite",
+    "build": "node scripts/copy-assets.mjs && vite build && tsc -p tsconfig.server.json",
+    "start": "node dist-server/index.js",
+    "typecheck": "tsc -p tsconfig.server.json --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "invite": "node dist-server/cli.js invite",
+    "assets": "node scripts/copy-assets.mjs"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.3.0",
+    "@fastify/cookie": "11.1.5",
+    "@fastify/static": "10.1.8",
+    "fastify": "5.12.7",
+    "pg": "8.23.1",
+    "ws": "8.22.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@excalidraw/excalidraw": "0.18.1",
+    "@excalidraw/mermaid-to-excalidraw": "2.3.0",
+    "@tailwindcss/vite": "4.3.3",
+    "@types/node": "^22.10.0",
+    "@types/pg": "8.23.1",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/ws": "8.18.2",
+    "@vitejs/plugin-react": "6.1.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-router": "8.5.0",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vite": "8.3.5"
+  }
+}

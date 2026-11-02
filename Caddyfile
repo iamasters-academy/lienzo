@@ -1,0 +1,5 @@
+# HTTPS automático para el dominio de DOMAIN (.env). El WebSocket del tiempo real pasa sin configurar nada.
+{$DOMAIN} {
+	encode gzip
+	reverse_proxy app:3000
+}
